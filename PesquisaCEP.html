@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACHA AQUI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #dbe2ef; /* Cor de fundo que combina com o azul */
+        }
+        /* Configuração da barra azul-marinho */
+        .barra-topo {
+            background-color: #000080; 
+            height: 60px;              /* Altura ajustada para 60px */
+            width: 100%;               
+            display: flex;             
+            align-items: center;       /* Alinha verticalmente no meio */
+            justify-content: center;   /* Centraliza o texto horizontalmente no meio */
+            box-sizing: border-box;
+        }
+        /* Configuração do texto do nome do site */
+        .nome-site {
+            color: #ffffff;            
+            font-size: 30px;           /* Tamanho da fonte ajustado para 30px */
+            font-weight: bold;         
+            margin: 0;
+        }
+        /* Configuração do contêiner de busca */
+        .busca-container {
+            margin-bottom: 20px;
+        }
+        /* Configuração do quadrado cinza para a resposta */
+        .quadrado-resposta {
+            background-color: #e5e5e5; /* Cor um pouco mais cinza */
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 500px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .quadrado-resposta h3 {
+            margin-top: 0;
+            color: #333333;
+        }
+    </style>
+    <script>
+        function pesquisarCep(){
+            const resposta = document.getElementById("resposta");
+            const cep = document.getElementById("cep").value.replace(/\D/g, ''); // Limpa traços e espaços
+            const validacep = /^[0-9]{8}$/;
+             
+            if(validacep.test(cep)){
+                resposta.textContent = "Buscando...";
+                
+                // Monta o link externo de consulta
+                const link = "https://viacep.com.br/ws/" + cep + "/json/?callback=preencherEndereco";
+                
+                // Exclui scripts de consultas anteriores para limpar a memória do HTML
+                const scriptAntigo = document.getElementById("viaCepScript");
+                if(scriptAntigo) { scriptAntigo.remove(); }
+
+                // Injeta a nova requisição
+                var script = document.createElement("script");
+                script.id = "viaCepScript";
+                script.src = link;
+                document.body.appendChild(script);
+            } else {
+                resposta.textContent = "O CEP digitado está fora do padrão permitido. Digite 8 números.";
+            }
+        }
+
+        // SOLUÇÃO DO TRAVAMENTO: Vincula a função diretamente na raiz do navegador (window)
+        window.preencherEndereco = function(conteudo) {
+            const resposta = document.getElementById("resposta");
+            
+            if (!("erro" in conteudo)){
+                // Insere os resultados formatados em linhas dentro do quadrado cinza
+                resposta.innerHTML = `
+                    <strong>Logradouro:</strong> ${conteudo.logradouro || 'Não disponível'}<br>
+                    <strong>Bairro:</strong> ${conteudo.bairro || 'Não disponível'}<br>
+                    <strong>Cidade:</strong> ${conteudo.localidade || 'Não disponível'}<br>
+                    <strong>UF:</strong> ${conteudo.uf || 'Não disponível'}
+                `;
+            } else {
+                resposta.textContent = "O CEP digitado não foi encontrado.";
+                document.getElementById("cep").value = "";
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <!-- Barra do topo com altura de 60px e título centralizado -->
+    <div class="barra-topo">
+        <h1 class="nome-site">ACHA AQUI</h1>
+    </div>
+
+    <main style="padding: 20px;">
+        
+        <div class="busca-container">
+            <label>CEP:</label>
+            <input type="text" id="cep" placeholder="Ex: 01001000" maxlength="8">
+            <button onclick="pesquisarCep()">Enviar</button>
+        </div>
+
+        <!-- Quadrado cinza onde as respostas aparecem -->
+        <div class="quadrado-resposta">
+            <h3>Resultado da Busca:</h3>
+            <p id="resposta">Aguardando envio do CEP...</p>
+        </div>
+
+    </main>
+
+</body>
+</html>
