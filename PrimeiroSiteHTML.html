@@ -10,7 +10,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9; /* Cor de fundo que combina com o azul */
+            background-color: #dbe2ef; /* Cor de fundo que combina com o azul */
         }
         /* Configuração da barra azul-marinho */
         .barra-topo {
@@ -58,11 +58,11 @@
                 
                 // Monta o link externo de consulta
                 const link = "https://viacep.com.br/ws/" + cep + "/json/?callback=preencherEndereco";
-        
+                
                 // Exclui scripts de consultas anteriores para limpar a memória do HTML
                 const scriptAntigo = document.getElementById("viaCepScript");
                 if(scriptAntigo) { scriptAntigo.remove(); }
-                
+
                 // Injeta a nova requisição
                 var script = document.createElement("script");
                 script.id = "viaCepScript";
@@ -72,9 +72,11 @@
                 resposta.textContent = "O CEP digitado está fora do padrão permitido. Digite 8 números.";
             }
         }
+
         // SOLUÇÃO DO TRAVAMENTO: Vincula a função diretamente na raiz do navegador (window)
         window.preencherEndereco = function(conteudo) {
             const resposta = document.getElementById("resposta");
+            
             if (!("erro" in conteudo)){
                 // Insere os resultados formatados em linhas dentro do quadrado cinza
                 resposta.innerHTML = `
@@ -91,21 +93,27 @@
     </script>
 </head>
 <body>
+
     <!-- Barra do topo com altura de 60px e título centralizado -->
     <div class="barra-topo">
         <h1 class="nome-site">ACHA AQUI</h1>
     </div>
+
     <main style="padding: 20px;">
+        
         <div class="busca-container">
             <label>CEP:</label>
             <input type="text" id="cep" placeholder="Ex: 01001000" maxlength="8">
             <button onclick="pesquisarCep()">Enviar</button>
         </div>
+
         <!-- Quadrado cinza onde as respostas aparecem -->
         <div class="quadrado-resposta">
             <h3>Resultado da Busca:</h3>
             <p id="resposta">Aguardando envio do CEP...</p>
         </div>
+
     </main>
+
 </body>
 </html>
