@@ -31,9 +31,19 @@ app.get("/ola", (req, res) => {
 app.get("/perfil", (req, res) => {
     res.json({ Nome: "Raniel de Jesus Nazarko", idade: "16 Anos" })
 })
+   
+app.get("/clientes", (req, res) => {
+    try {
+        /*     Abrir o arquivo         */
+        const bd = JSON.parse(fs.readFileSync("bd.json", "utf8"))
+        res.status(200).json({resposta: bd})
+    } catch (erro) {
+        res.status(500).json({ erro: erro.message })
+    }
+})
 
 app.listen(port, () => {
     console.log("API rodando na porta " + port)
 })
 
-/*    http://localhost:3000/perfil            */
+/*    http://localhost:3000/clientes            */
