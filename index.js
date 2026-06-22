@@ -31,7 +31,7 @@ app.get("/ola", (req, res) => {
 app.get("/perfil", (req, res) => {
     res.json({ Nome: "Raniel de Jesus Nazarko", idade: "16 Anos" })
 })
-   
+  
 app.get("/clientes", (req, res) => {
     try {
         /*     Abrir o arquivo         */
@@ -42,8 +42,69 @@ app.get("/clientes", (req, res) => {
     }
 })
 
+/*       Encontra Cliente pelo NOME           */
+app.get("/clientes/nome/:nome", (req, res) => {
+    const nome = req.params.nome
+    try {
+        const bd = JSON.parse(fs.readFileSync("bd.json", "utf8"))
+        const cliente = bd.find((cliente) => cliente.nome == nome)
+        if(!cliente){
+            return res.status(404).json({erro: "Cliente com esse NOME não existe no BD!"})
+        }
+        res.status(200).json({resposta: cliente})
+    } catch (erro) {
+        res.status(500).json({ erro: erro.message })
+    }
+})
+
+/*       Encontra Cliente pelo CPF            */
+app.get("/clientes/cpf/:cpf", (req, res) => {
+    const cpf = req.params.cpf
+    try {
+        const bd = JSON.parse(fs.readFileSync("bd.json", "utf8"))
+        const cliente = bd.find((cliente) => cliente.cpf == cpf)
+        if(!cliente){
+            return res.status(404).json({erro: "Cliente com esse CPF não existe no BD!"})
+        }
+        res.status(200).json({resposta: cliente})
+    } catch (erro) {
+        res.status(500).json({ erro: erro.message })
+    }
+})
+
+/*       Encontra Cliente pela SENHA          */
+app.get("/clientes/senha/:senha", (req, res) => {
+    const senha = req.params.senha
+    try {
+        const bd = JSON.parse(fs.readFileSync("bd.json", "utf8"))
+        const cliente = bd.find((cliente) => cliente.senha == senha)
+        if(!cliente){
+            return res.status(404).json({erro: "Cliente com essa SENHA nâo existe no BD!"})
+        }
+        res.status(200).json({resposta: cliente})
+    } catch (erro) {
+        res.status(500).json({ erro: erro.message })
+    }
+})
+
 app.listen(port, () => {
     console.log("API rodando na porta " + port)
 })
 
-/*    http://localhost:3000/clientes            */
+
+
+
+
+
+
+
+
+
+
+
+/*    GET  = Ver o Perfil                                  http://localhost:3000/perfil                                   */
+/*    GET  = Ver o clientes cadastrados                    http://localhost:3000/clientes                                 */
+/*    POST = adicionar cliente                             http://localhost:3000/clientes                                 */
+/*    GET  = Ver o cliente com o NOME em especifico        http://localhost:3000/clientes/nome/Raniel                     */
+/*    GET  = Ver o cliente com o CPF em especifico         http://localhost:3000/clientes/cpf/10121989950                 */
+/*    GET  = Ver o cliente com uma SENHA em especifico     http://localhost:3000/clientes/senha/Raniel                    */
