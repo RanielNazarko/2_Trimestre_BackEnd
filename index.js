@@ -89,19 +89,21 @@ app.get("/clientes/senha/:senha", (req, res) => {
 
 
 app.delete("/clientes/:cpf", (req, res) => {
-    /*     Pegar o CPF da rota     */
+    /*     Pegar o CPF da rota            */
     const cpf = req.params.cpf
 try{
-    /*     Abrir o arquivo         */
+    /*     Abrir o arquivo               */
     const bd = JSON.parse(fs.readFileSync("bd.json", "utf8"))
-    /*  Encontra o indece do cliente a ser excluido */
+    /*     Encontra o indece do cliente a ser excluido */
     const indiceCliente = bd.findIndex((cliente) => cliente.cpf == cpf)
-    /* Remove o indice da lista */
+    /*     Remove o indice da lista      */
     if(indiceCliente == -1){
         return res.status(404).json({erro: "O cliente não existe"})
     }
     bd.splice(indiceCliente, 1)
-    /*   Dar uma resposta ao cliente */
+    /*     Atualizar o arquivo           */
+    fs.writeFileSync("bd.json", JSON.stringify(bd), "utf8")
+    /*     Dar uma resposta ao cliente   */
         res.status(200).json({resposta: "Cliente excluido com sucesso!"})
     }catch(erro){
         res.status(500).json({ erro: erro.message })
